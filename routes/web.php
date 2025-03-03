@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+use App\Http\Controllers\PasswordGeneratorController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,4 +20,7 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
 
-require __DIR__.'/auth.php';
+Route::get('/password-generator', [PasswordGeneratorController::class, 'index'])->name('password-generator');
+Route::post('/generate-password', [PasswordGeneratorController::class, 'generate'])->name('generate-password');
+
+require __DIR__ . '/auth.php';

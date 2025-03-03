@@ -11,15 +11,22 @@
                 <x-app-logo />
             </a>
 
+                <flux:navlist variant="outline">
+                    <flux:navlist.group heading="Platform" class="grid">
+                        <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+
+                        <flux:navlist.item icon="key" :href="route('password-generator')" :current="request()->routeIs('password-generator')" wire:navigate>
+                            {{ __('Password Generator') }}
+                        </flux:navlist.item>
+                        
+                    </flux:navlist.group>
+                </flux:navlist>
+
+
+
+            {{-- <flux:spacer />
+
             <flux:navlist variant="outline">
-                <flux:navlist.group heading="Platform" class="grid">
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
-                </flux:navlist.group>
-            </flux:navlist>
-
-            <flux:spacer />
-
-            {{-- <flux:navlist variant="outline">
                 <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
                 {{ __('Repository') }}
                 </flux:navlist.item>
