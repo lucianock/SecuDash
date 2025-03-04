@@ -14,13 +14,15 @@
                 <label for="include_symbols" class="text-sm font-medium">Include Symbols</label>
             </div>
             <br>
-            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md">Generate Password</button>
+            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md cursor-pointer">Generate
+                Password</button>
         </form>
 
         <div id="generated-password" class="mt-6 p-4 bg-gray-100 border rounded-md hidden">
             <h3 class="font-medium">Generated Password:</h3>
             <p id="password" class="text-xl font-bold"></p>
-            <button id="copy-button" class="mt-2 bg-gray-300 text-sm p-2 rounded-md">Copy</button>
+            <button id="copy-button" type="button"
+                class="bg-blue-500 text-white p-2 rounded-md cursor-pointer">Copy</button>
         </div>
     </div>
 
@@ -53,16 +55,18 @@
         document.getElementById('copy-button').addEventListener('click', function() {
             const password = document.getElementById('password').innerText;
 
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(password).then(function() {
-                    alert("Contraseña copiada al portapapeles");
-                }).catch(function(err) {
-                    console.error("Error al copiar al portapapeles: ", err);
-                    alert("Hubo un error al copiar la contraseña.");
-                });
-            } else {
-                alert("Tu navegador no soporta copiar al portapapeles.");
+            const textarea = document.createElement('textarea');
+            textarea.value = password;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                alert("Contraseña copiada al portapapeles");
+            } catch (err) {
+                console.error("Error al copiar al portapapeles: ", err);
+                alert("Hubo un error al copiar la contraseña.");
             }
+            document.body.removeChild(textarea);
         });
     </script>
 </x-layouts.app>
