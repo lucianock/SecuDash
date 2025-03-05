@@ -61,10 +61,10 @@
             textarea.select();
             try {
                 document.execCommand('copy');
-                alert("Contraseña copiada al portapapeles");
+                alert("Password copied to clipboard");
             } catch (err) {
-                console.error("Error al copiar al portapapeles: ", err);
-                alert("Hubo un error al copiar la contraseña.");
+                console.error("Error copying to clipboard: ", err);
+                alert("There was an error copying the password.");
             }
             document.body.removeChild(textarea);
         });
