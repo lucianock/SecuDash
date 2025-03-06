@@ -27,7 +27,7 @@ Route::post('/generate-password', [PasswordGeneratorController::class, 'generate
 
 # Vulneravility Search
 Route::get('/vulnerability-search', [VulnerabilityController::class, 'index'])->name('vulnerability-search');
-Route::get('/api/vulnerabilities', [VulnerabilityController::class, 'search']);
+Route::get('/api/vulnerabilities', [VulnerabilityController::class, 'search'])->name('api.vulnerabilities.search');
 
 
 
