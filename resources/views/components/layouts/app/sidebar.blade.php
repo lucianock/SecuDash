@@ -20,8 +20,12 @@
                             {{ __('Password Generator') }}
                         </flux:navlist.item>
 
-                        <flux:navlist.item icon="key" :href="route('vulnerability-search')" :current="request()->routeIs('vulnerability-search')" wire:navigate>
+                        <flux:navlist.item icon="bug-ant" :href="route('vulnerability-search')" :current="request()->routeIs('vulnerability-search')" wire:navigate>
                             {{ __('Vulneravility Search') }}
+                        </flux:navlist.item>
+                        
+                        <flux:navlist.item icon="key" :href="route('vault.index')" :current="request()->routeIs('vault.*')" wire:navigate>
+                            {{ __('Vault') }}
                         </flux:navlist.item>
                         
                     </flux:navlist.group>
