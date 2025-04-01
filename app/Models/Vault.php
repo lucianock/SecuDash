@@ -15,7 +15,8 @@ class Vault extends Model
         'host',
         'username',
         'password',
-        'notes'
+        'notes',
+        'user_id'
     ];
 
     protected $hidden = ['password'];
@@ -25,3 +26,4 @@ class Vault extends Model
         return $this->belongsTo(User::class);
     }
 }
+
