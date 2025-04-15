@@ -23,11 +23,15 @@
                         <flux:navlist.item icon="bug-ant" :href="route('vulnerability-search')" :current="request()->routeIs('vulnerability-search')" wire:navigate>
                             {{ __('Vulneravility Search') }}
                         </flux:navlist.item>
-                        
+
                         <flux:navlist.item icon="key" :href="route('vault.index')" :current="request()->routeIs('vault.*')" wire:navigate>
                             {{ __('Vault') }}
                         </flux:navlist.item>
-                        
+
+                        <flux:navlist.item icon="magnifying-glass" :href="route('linkedin.index')" :current="request()->routeIs('linkedin-search.*')" wire:navigate>
+                            {{ __('Scraping') }}
+                        </flux:navlist.item>
+
                     </flux:navlist.group>
                 </flux:navlist>
 
