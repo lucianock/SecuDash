@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LinkedinScraperController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use App\Http\Controllers\PasswordGeneratorController;
@@ -39,5 +40,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('vault/{vault}/edit', [VaultController::class, 'edit'])->name('vault.edit'); */
 });
 
+# Linkedin Scraper
+Route::get('/linkedin-search', [LinkedinScraperController::class, 'index'])->name('linkedin.index');
+Route::post('/linkedin-search', [LinkedinScraperController::class, 'search'])->name('linkedin.search');
+
+Route::get('/server-stats', [ServerStatsController::class, 'index']);
 
 require __DIR__ . '/auth.php';
