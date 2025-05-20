@@ -15,6 +15,8 @@ class LinkedinScraperController extends Controller
 
     public function search(Request $request)
     {
+        set_time_limit(0); // Sin límite de tiempo
+
         $keyword = $request->input('keyword');
 
         $process = new Process([
@@ -29,12 +31,13 @@ class LinkedinScraperController extends Controller
 
         $results = json_decode($process->getOutput(), true);
 
-        foreach ($results as $post) {
+        //Seve results into the database
+        /* foreach ($results as $post) {
             LinkedinPost::create([
                 'content' => $post['content'],
                 'url' => $post['url'] ?? '',
             ]);
-        }
+        } */
 
         return view('linkedin.results', compact('results', 'keyword'));
     }
