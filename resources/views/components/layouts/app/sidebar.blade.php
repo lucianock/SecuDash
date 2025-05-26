@@ -15,6 +15,10 @@
 
                         <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
 
+                        <flux:navlist.item icon="shield-check" :href="route('vulnerability.index')" :current="request()->routeIs('vulnerability.*')" wire:navigate>
+                            {{ __('Vulnerability Scanner') }}
+                        </flux:navlist.item>
+
                         <flux:navlist.item icon="key" :href="route('password-generator')" :current="request()->routeIs('password-generator')" wire:navigate>
                             {{ __('Password Generator') }}
                         </flux:navlist.item>
