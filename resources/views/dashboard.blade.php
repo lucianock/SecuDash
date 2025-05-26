@@ -150,167 +150,173 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/countup.js@2.6.2/dist/countUp.umd.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/countup.js@2.6.2/dist/countUp.umd.js"></script>
 
     <script>
-        const {
-            CountUp
-        } = window.countUp;
-
-        let autoRefresh = true;
-        document.getElementById('refreshToggle').addEventListener('click', () => {
-            autoRefresh = !autoRefresh;
-            document.getElementById('refreshToggle').textContent = `Auto-Refresh: ${autoRefresh ? 'ON' : 'OFF'}`;
-        });
-
-        async function cargarMetricas() {
-            const {
-                data: d
-            } = await axios.get('https://lucianock.com/metrics_hidden_lck.php');
-
-            // Cards
-            document.getElementById('cardUptime').textContent = d.uptime; // string
-            document.getElementById('cardUser').textContent = d.current_user; // string
-            new CountUp('cardProc', d.processes.count, {
-                duration: 1
-            }).start();
-            new CountUp('cardServices', Object.values(d.services).filter(s => s === 'active').length, {
-                duration: 1
-            }).start();
-
-            // System Info
-            document.getElementById('sysHost').textContent = d.system.hostname;
-            document.getElementById('sysOS').textContent = d.system.os;
-            document.getElementById('sysKernel').textContent = d.system.kernel;
-            document.getElementById('sysArch').textContent = d.system.architecture;
-            document.getElementById('sysIP').textContent = d.public_ip;
-            document.getElementById('uptimeFull').textContent = d.uptime;
-            document.getElementById('bootTime').textContent = d.boot_time;
-
-            // Alert
-            const alertBox = document.getElementById('alertBox');
-            if (d.cpu.total_usage_percent > 90) {
-                alertBox.classList.remove('hidden');
-                alertBox.classList.add('bg-red-700');
-                document.getElementById('alertText').textContent = '¡Atención! Uso de CPU muy alto.';
+        // Esperar a que CountUp.js esté cargado
+        function waitForCountUp(callback) {
+            if (window.countUp) {
+                callback();
             } else {
-                alertBox.classList.add('hidden');
+                setTimeout(() => waitForCountUp(callback), 50);
             }
-
-            // Line Chart - CPU Load
-            new Chart(document.getElementById('cpuChart'), {
-                type: 'line',
-                data: {
-                    labels: ['1m', '5m', '15m'],
-                    datasets: [{
-                        label: 'Load Avg',
-                        data: d.cpu.load_avg,
-                        fill: true,
-                        tension: 0.4,
-                        borderColor: '#3b82f6',
-                        backgroundColor: 'rgba(59,130,246,0.3)'
-                    }]
-                },
-                options: {
-                    responsive: true
-                }
-            });
-
-            // Doughnuts - RAM & Disco
-            new Chart(document.getElementById('memChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Usada', 'Libre'],
-                    datasets: [{
-                        data: [d.memory.used_percent, 100 - d.memory.used_percent],
-                        backgroundColor: ['#3b82f6', '#374151']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: '#ddd'
-                            }
-                        }
-                    }
-                }
-            });
-            new Chart(document.getElementById('diskChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Usado', 'Libre'],
-                    datasets: [{
-                        data: [d.disk.used_percent, 100 - d.disk.used_percent],
-                        backgroundColor: ['#ef4444', '#374151']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: '#ddd'
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Bar Chart - Network
-            const labelsNet = Object.keys(d.network);
-            const rx = labelsNet.map(i => d.network[i].rx_bytes);
-            const tx = labelsNet.map(i => d.network[i].tx_bytes);
-            new Chart(document.getElementById('netChart'), {
-                type: 'bar',
-                data: {
-                    labels: labelsNet,
-                    datasets: [{
-                            label: 'RX',
-                            data: rx,
-                            backgroundColor: '#10b981'
-                        },
-                        {
-                            label: 'TX',
-                            data: tx,
-                            backgroundColor: '#f59e0b'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            // Tables - Procesos
-            const cpuRows = document.getElementById('tableCpuRows');
-            cpuRows.innerHTML = '';
-            d.processes.top_cpu.trim().split('\n').slice(1).forEach(l => {
-                const [pid, , pc] = l.trim().split(/\s+/);
-                cpuRows.innerHTML +=
-                    `<tr class="hover:bg-neutral-700"><td class="py-1">${pid}</td><td>${pc}</td></tr>`;
-            });
-            const memRows = document.getElementById('tableMemRows');
-            memRows.innerHTML = '';
-            d.processes.top_mem.trim().split('\n').slice(1).forEach(l => {
-                const [pid, , pm] = l.trim().split(/\s+/);
-                memRows.innerHTML +=
-                    `<tr class="hover:bg-neutral-700"><td class="py-1">${pid}</td><td>${pm}</td></tr>`;
-            });
-
-            // SSH
-            document.getElementById('sshSessions').textContent = d.ssh_sessions;
         }
 
-        cargarMetricas();
-        setInterval(() => {
-            if (autoRefresh) cargarMetricas();
-        }, 5000);
+        waitForCountUp(() => {
+            const { CountUp } = window.countUp;
+            let autoRefresh = true;
+            
+            document.getElementById('refreshToggle').addEventListener('click', () => {
+                autoRefresh = !autoRefresh;
+                document.getElementById('refreshToggle').textContent = `Auto-Refresh: ${autoRefresh ? 'ON' : 'OFF'}`;
+            });
+
+            async function cargarMetricas() {
+                const { data: d } = await axios.get('https://lucianock.com/metrics_hidden_lck.php');
+
+                // Cards
+                document.getElementById('cardUptime').textContent = d.uptime; // string
+                document.getElementById('cardUser').textContent = d.current_user; // string
+                new CountUp('cardProc', d.processes.count, {
+                    duration: 1
+                }).start();
+                new CountUp('cardServices', Object.values(d.services).filter(s => s === 'active').length, {
+                    duration: 1
+                }).start();
+
+                // System Info
+                document.getElementById('sysHost').textContent = d.system.hostname;
+                document.getElementById('sysOS').textContent = d.system.os;
+                document.getElementById('sysKernel').textContent = d.system.kernel;
+                document.getElementById('sysArch').textContent = d.system.architecture;
+                document.getElementById('sysIP').textContent = d.public_ip;
+                document.getElementById('uptimeFull').textContent = d.uptime;
+                document.getElementById('bootTime').textContent = d.boot_time;
+
+                // Alert
+                const alertBox = document.getElementById('alertBox');
+                if (d.cpu.total_usage_percent > 90) {
+                    alertBox.classList.remove('hidden');
+                    alertBox.classList.add('bg-red-700');
+                    document.getElementById('alertText').textContent = '¡Atención! Uso de CPU muy alto.';
+                } else {
+                    alertBox.classList.add('hidden');
+                }
+
+                // Line Chart - CPU Load
+                new Chart(document.getElementById('cpuChart'), {
+                    type: 'line',
+                    data: {
+                        labels: ['1m', '5m', '15m'],
+                        datasets: [{
+                            label: 'Load Avg',
+                            data: d.cpu.load_avg,
+                            fill: true,
+                            tension: 0.4,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59,130,246,0.3)'
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
+
+                // Doughnuts - RAM & Disco
+                new Chart(document.getElementById('memChart'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Usada', 'Libre'],
+                        datasets: [{
+                            data: [d.memory.used_percent, 100 - d.memory.used_percent],
+                            backgroundColor: ['#3b82f6', '#374151']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#ddd'
+                                }
+                            }
+                        }
+                    }
+                });
+                new Chart(document.getElementById('diskChart'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Usado', 'Libre'],
+                        datasets: [{
+                            data: [d.disk.used_percent, 100 - d.disk.used_percent],
+                            backgroundColor: ['#ef4444', '#374151']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#ddd'
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Bar Chart - Network
+                const labelsNet = Object.keys(d.network);
+                const rx = labelsNet.map(i => d.network[i].rx_bytes);
+                const tx = labelsNet.map(i => d.network[i].tx_bytes);
+                new Chart(document.getElementById('netChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: labelsNet,
+                        datasets: [{
+                                label: 'RX',
+                                data: rx,
+                                backgroundColor: '#10b981'
+                            },
+                            {
+                                label: 'TX',
+                                data: tx,
+                                backgroundColor: '#f59e0b'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                // Tables - Procesos
+                const cpuRows = document.getElementById('tableCpuRows');
+                cpuRows.innerHTML = '';
+                d.processes.top_cpu.trim().split('\n').slice(1).forEach(l => {
+                    const [pid, , pc] = l.trim().split(/\s+/);
+                    cpuRows.innerHTML +=
+                        `<tr class="hover:bg-neutral-700"><td class="py-1">${pid}</td><td>${pc}</td></tr>`;
+                });
+                const memRows = document.getElementById('tableMemRows');
+                memRows.innerHTML = '';
+                d.processes.top_mem.trim().split('\n').slice(1).forEach(l => {
+                    const [pid, , pm] = l.trim().split(/\s+/);
+                    memRows.innerHTML +=
+                        `<tr class="hover:bg-neutral-700"><td class="py-1">${pid}</td><td>${pm}</td></tr>`;
+                });
+
+                // SSH
+                document.getElementById('sshSessions').textContent = d.ssh_sessions;
+            }
+
+            cargarMetricas();
+            setInterval(() => {
+                if (autoRefresh) cargarMetricas();
+            }, 5000);
+        });
     </script>
 </x-layouts.app>
