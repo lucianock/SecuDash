@@ -4,8 +4,9 @@ use App\Http\Controllers\LinkedinScraperController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use App\Http\Controllers\PasswordGeneratorController;
-use App\Http\Controllers\Api\VulnerabilityController;
+use App\Http\Controllers\Api\VulnerabilityControllerApi;
 use App\Http\Controllers\VaultController;
+use App\Http\Controllers\VulnerabilityController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,6 +22,9 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
+
+    Route::get('/vulnerability', [VulnerabilityController::class, 'index'])->name('vulnerability.index');
+    Route::post('/vulnerability/scan', [VulnerabilityController::class, 'scan'])->name('vulnerability.scan');
 });
 
 # Password Generator
@@ -28,8 +32,8 @@ Route::get('/password-generator', [PasswordGeneratorController::class, 'index'])
 Route::post('/generate-password', [PasswordGeneratorController::class, 'generate'])->name('generate-password');
 
 # Vulneravility Search
-Route::get('/vulnerability-search', [VulnerabilityController::class, 'index'])->name('vulnerability-search');
-Route::get('/api/vulnerabilities', [VulnerabilityController::class, 'search'])->name('api.vulnerabilities.search');
+Route::get('/vulnerability-search', [VulnerabilityControllerApi::class, 'index'])->name('vulnerability-search');
+Route::get('/api/vulnerabilities', [VulnerabilityControllerApi::class, 'search'])->name('api.vulnerabilities.search');
 
 # Vault
 Route::middleware(['auth'])->group(function () {

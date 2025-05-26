@@ -150,23 +150,28 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/countup.js@2.6.2/dist/countUp.umd.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/countup.js@2.6.2/dist/countUp.umd.js"></script>
 
     <script>
-        const {
-            CountUp
-        } = window.countUp;
+        // Esperar a que CountUp.js esté cargado
+        function waitForCountUp(callback) {
+            if (window.countUp) {
+                callback();
+            } else {
+                setTimeout(() => waitForCountUp(callback), 50);
+            }
+        }
 
+        waitForCountUp(() => {
+            const { CountUp } = window.countUp;
         let autoRefresh = true;
+            
         document.getElementById('refreshToggle').addEventListener('click', () => {
             autoRefresh = !autoRefresh;
             document.getElementById('refreshToggle').textContent = `Auto-Refresh: ${autoRefresh ? 'ON' : 'OFF'}`;
         });
 
         async function cargarMetricas() {
-            const {
-                data: d
-            } = await axios.get('https://lucianock.com/metrics_hidden_lck.php');
+                const { data: d } = await axios.get('https://lucianock.com/metrics_hidden_lck.php');
 
             // Cards
             document.getElementById('cardUptime').textContent = d.uptime; // string
@@ -312,5 +317,6 @@
         setInterval(() => {
             if (autoRefresh) cargarMetricas();
         }, 5000);
+        });
     </script>
 </x-layouts.app>
