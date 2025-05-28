@@ -163,160 +163,207 @@
 
         waitForCountUp(() => {
             const { CountUp } = window.countUp;
-        let autoRefresh = true;
+            let autoRefresh = true;
             
-        document.getElementById('refreshToggle').addEventListener('click', () => {
-            autoRefresh = !autoRefresh;
-            document.getElementById('refreshToggle').textContent = `Auto-Refresh: ${autoRefresh ? 'ON' : 'OFF'}`;
-        });
-
-        async function cargarMetricas() {
-                const { data: d } = await axios.get('https://lucianock.com/metrics_hidden_lck.php');
-
-            // Cards
-            document.getElementById('cardUptime').textContent = d.uptime; // string
-            document.getElementById('cardUser').textContent = d.current_user; // string
-            new CountUp('cardProc', d.processes.count, {
-                duration: 1
-            }).start();
-            new CountUp('cardServices', Object.values(d.services).filter(s => s === 'active').length, {
-                duration: 1
-            }).start();
-
-            // System Info
-            document.getElementById('sysHost').textContent = d.system.hostname;
-            document.getElementById('sysOS').textContent = d.system.os;
-            document.getElementById('sysKernel').textContent = d.system.kernel;
-            document.getElementById('sysArch').textContent = d.system.architecture;
-            document.getElementById('sysIP').textContent = d.public_ip;
-            document.getElementById('uptimeFull').textContent = d.uptime;
-            document.getElementById('bootTime').textContent = d.boot_time;
-
-            // Alert
-            const alertBox = document.getElementById('alertBox');
-            if (d.cpu.total_usage_percent > 90) {
-                alertBox.classList.remove('hidden');
-                alertBox.classList.add('bg-red-700');
-                document.getElementById('alertText').textContent = '¡Atención! Uso de CPU muy alto.';
-            } else {
-                alertBox.classList.add('hidden');
+            // Store chart instances
+            let cpuChart = null;
+            let memChart = null;
+            let diskChart = null;
+            let netChart = null;
+            
+            const refreshToggle = document.getElementById('refreshToggle');
+            if (refreshToggle) {
+                refreshToggle.addEventListener('click', () => {
+                    autoRefresh = !autoRefresh;
+                    refreshToggle.textContent = `Auto-Refresh: ${autoRefresh ? 'ON' : 'OFF'}`;
+                });
+                refreshToggle.textContent = `Auto-Refresh: ${autoRefresh ? 'ON' : 'OFF'}`;
             }
 
-            // Line Chart - CPU Load
-            new Chart(document.getElementById('cpuChart'), {
-                type: 'line',
-                data: {
-                    labels: ['1m', '5m', '15m'],
-                    datasets: [{
-                        label: 'Load Avg',
-                        data: d.cpu.load_avg,
-                        fill: true,
-                        tension: 0.4,
-                        borderColor: '#3b82f6',
-                        backgroundColor: 'rgba(59,130,246,0.3)'
-                    }]
-                },
-                options: {
-                    responsive: true
-                }
-            });
+            async function cargarMetricas() {
+                const alertBox = document.getElementById('alertBox');
+                if (!alertBox) return; // Not the dashboard page, skip
+                const { data: d } = await axios.get('https://lucianock.com/metrics_hidden_lck.php');
 
-            // Doughnuts - RAM & Disco
-            new Chart(document.getElementById('memChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Usada', 'Libre'],
-                    datasets: [{
-                        data: [d.memory.used_percent, 100 - d.memory.used_percent],
-                        backgroundColor: ['#3b82f6', '#374151']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: '#ddd'
-                            }
-                        }
-                    }
-                }
-            });
-            new Chart(document.getElementById('diskChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Usado', 'Libre'],
-                    datasets: [{
-                        data: [d.disk.used_percent, 100 - d.disk.used_percent],
-                        backgroundColor: ['#ef4444', '#374151']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: '#ddd'
-                            }
-                        }
-                    }
-                }
-            });
+                // Cards
+                const cardUptime = document.getElementById('cardUptime');
+                if (cardUptime) cardUptime.textContent = d.uptime;
+                const cardUser = document.getElementById('cardUser');
+                if (cardUser) cardUser.textContent = d.current_user;
+                new CountUp('cardProc', d.processes.count, {
+                    duration: 1
+                }).start();
+                new CountUp('cardServices', Object.values(d.services).filter(s => s === 'active').length, {
+                    duration: 1
+                }).start();
 
-            // Bar Chart - Network
-            const labelsNet = Object.keys(d.network);
-            const rx = labelsNet.map(i => d.network[i].rx_bytes);
-            const tx = labelsNet.map(i => d.network[i].tx_bytes);
-            new Chart(document.getElementById('netChart'), {
-                type: 'bar',
-                data: {
-                    labels: labelsNet,
-                    datasets: [{
-                            label: 'RX',
-                            data: rx,
-                            backgroundColor: '#10b981'
+                // System Info
+                const sysHost = document.getElementById('sysHost');
+                if (sysHost) sysHost.textContent = d.system.hostname;
+                const sysOS = document.getElementById('sysOS');
+                if (sysOS) sysOS.textContent = d.system.os;
+                const sysKernel = document.getElementById('sysKernel');
+                if (sysKernel) sysKernel.textContent = d.system.kernel;
+                const sysArch = document.getElementById('sysArch');
+                if (sysArch) sysArch.textContent = d.system.architecture;
+                const sysIP = document.getElementById('sysIP');
+                if (sysIP) sysIP.textContent = d.public_ip;
+                const uptimeFull = document.getElementById('uptimeFull');
+                if (uptimeFull) uptimeFull.textContent = d.uptime;
+                const bootTime = document.getElementById('bootTime');
+                if (bootTime) bootTime.textContent = d.boot_time;
+
+                // Alert
+                if (d.cpu.total_usage_percent > 90) {
+                    alertBox.classList.remove('hidden');
+                    alertBox.classList.add('bg-red-700');
+                    const alertText = document.getElementById('alertText');
+                    if (alertText) alertText.textContent = '¡Atención! Uso de CPU muy alto.';
+                } else {
+                    alertBox.classList.add('hidden');
+                }
+
+                // Line Chart - CPU Load
+                const cpuChartEl = document.getElementById('cpuChart');
+                if (cpuChartEl) {
+                    // Destroy previous chart instance if it exists
+                    if (cpuChart) cpuChart.destroy();
+                    cpuChart = new Chart(cpuChartEl, {
+                        type: 'line',
+                        data: {
+                            labels: ['1m', '5m', '15m'],
+                            datasets: [{
+                                label: 'Load Avg',
+                                data: d.cpu.load_avg,
+                                fill: true,
+                                tension: 0.4,
+                                borderColor: '#3b82f6',
+                                backgroundColor: 'rgba(59,130,246,0.3)'
+                            }]
                         },
-                        {
-                            label: 'TX',
-                            data: tx,
-                            backgroundColor: '#f59e0b'
+                        options: {
+                            responsive: true
                         }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
+                    });
                 }
-            });
 
-            // Tables - Procesos
-            const cpuRows = document.getElementById('tableCpuRows');
-            cpuRows.innerHTML = '';
-            d.processes.top_cpu.trim().split('\n').slice(1).forEach(l => {
-                const [pid, , pc] = l.trim().split(/\s+/);
-                cpuRows.innerHTML +=
-                    `<tr class="hover:bg-neutral-700"><td class="py-1">${pid}</td><td>${pc}</td></tr>`;
-            });
-            const memRows = document.getElementById('tableMemRows');
-            memRows.innerHTML = '';
-            d.processes.top_mem.trim().split('\n').slice(1).forEach(l => {
-                const [pid, , pm] = l.trim().split(/\s+/);
-                memRows.innerHTML +=
-                    `<tr class="hover:bg-neutral-700"><td class="py-1">${pid}</td><td>${pm}</td></tr>`;
-            });
+                // Doughnuts - RAM & Disco
+                const memChartEl = document.getElementById('memChart');
+                if (memChartEl) {
+                    // Destroy previous chart instance if it exists
+                    if (memChart) memChart.destroy();
+                    memChart = new Chart(memChartEl, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Usada', 'Libre'],
+                            datasets: [{
+                                data: [d.memory.used_percent, 100 - d.memory.used_percent],
+                                backgroundColor: ['#3b82f6', '#374151']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: '#ddd'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                const diskChartEl = document.getElementById('diskChart');
+                if (diskChartEl) {
+                    // Destroy previous chart instance if it exists
+                    if (diskChart) diskChart.destroy();
+                    diskChart = new Chart(diskChartEl, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Usado', 'Libre'],
+                            datasets: [{
+                                data: [d.disk.used_percent, 100 - d.disk.used_percent],
+                                backgroundColor: ['#ef4444', '#374151']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: '#ddd'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
 
-            // SSH
-            document.getElementById('sshSessions').textContent = d.ssh_sessions;
-        }
+                // Bar Chart - Network
+                const labelsNet = Object.keys(d.network);
+                const rx = labelsNet.map(i => d.network[i].rx_bytes);
+                const tx = labelsNet.map(i => d.network[i].tx_bytes);
+                const netChartEl = document.getElementById('netChart');
+                if (netChartEl) {
+                    // Destroy previous chart instance if it exists
+                    if (netChart) netChart.destroy();
+                    netChart = new Chart(netChartEl, {
+                        type: 'bar',
+                        data: {
+                            labels: labelsNet,
+                            datasets: [{
+                                    label: 'RX',
+                                    data: rx,
+                                    backgroundColor: '#10b981'
+                                },
+                                {
+                                    label: 'TX',
+                                    data: tx,
+                                    backgroundColor: '#f59e0b'
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
 
-        cargarMetricas();
-        setInterval(() => {
-            if (autoRefresh) cargarMetricas();
-        }, 5000);
+                // Tables - Procesos
+                const cpuRows = document.getElementById('tableCpuRows');
+                if (cpuRows) {
+                    cpuRows.innerHTML = '';
+                    d.processes.top_cpu.trim().split('\n').slice(1).forEach(l => {
+                        const [pid, , pc] = l.trim().split(/\s+/);
+                        cpuRows.innerHTML +=
+                            `<tr class="hover:bg-neutral-700"><td class="py-1">${pid}</td><td>${pc}</td></tr>`;
+                    });
+                }
+                const memRows = document.getElementById('tableMemRows');
+                if (memRows) {
+                    memRows.innerHTML = '';
+                    d.processes.top_mem.trim().split('\n').slice(1).forEach(l => {
+                        const [pid, , pm] = l.trim().split(/\s+/);
+                        memRows.innerHTML +=
+                            `<tr class="hover:bg-neutral-700"><td class="py-1">${pid}</td><td>${pm}</td></tr>`;
+                    });
+                }
+
+                // SSH
+                const sshSessions = document.getElementById('sshSessions');
+                if (sshSessions) sshSessions.textContent = d.ssh_sessions;
+            }
+
+            cargarMetricas();
+            setInterval(() => {
+                if (autoRefresh) cargarMetricas();
+            }, 5000);
         });
     </script>
 </x-layouts.app>

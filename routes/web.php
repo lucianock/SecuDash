@@ -7,6 +7,7 @@ use App\Http\Controllers\PasswordGeneratorController;
 use App\Http\Controllers\Api\VulnerabilityControllerApi;
 use App\Http\Controllers\VaultController;
 use App\Http\Controllers\VulnerabilityController;
+use App\Http\Controllers\ServerStatsController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,8 +24,12 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 
-    Route::get('/vulnerability', [VulnerabilityController::class, 'index'])->name('vulnerability.index');
-    Route::post('/vulnerability/scan', [VulnerabilityController::class, 'scan'])->name('vulnerability.scan');
+    // Vulnerability Scanner Routes
+    Route::prefix('vulnerability')->group(function () {
+        Route::get('/', [VulnerabilityController::class, 'index'])->name('vulnerability.index');
+        Route::post('/scan', [VulnerabilityController::class, 'scan'])->name('vulnerability.scan');
+        Route::get('/status/{scanId}', [VulnerabilityController::class, 'status'])->name('vulnerability.status');
+    });
 });
 
 # Password Generator
@@ -47,7 +52,5 @@ Route::middleware(['auth'])->group(function () {
 # Linkedin Scraper
 Route::get('/linkedin-search', [LinkedinScraperController::class, 'index'])->name('linkedin.index');
 Route::post('/linkedin-search', [LinkedinScraperController::class, 'search'])->name('linkedin.search');
-
-Route::get('/server-stats', [ServerStatsController::class, 'index']);
 
 require __DIR__ . '/auth.php';
