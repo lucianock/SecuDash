@@ -1,9 +1,8 @@
 <x-layouts.app>
-    <div class="p-6 bg-neutral-900 min-h-screen">
-
+    <div class="min-h-screen bg-gradient-to-br from-dark-bg to-dark-surface p-6">
         <!-- Live Refresh Toggle -->
-        <div class="flex justify-end mb-4">
-            <button id="refreshToggle" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition">
+        <div class="flex justify-end mb-6">
+            <button id="refreshToggle" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl">
                 Auto-Refresh: ON
             </button>
         </div>
@@ -11,48 +10,62 @@
         <!-- Header / Summary cards -->
         <div class="grid gap-6 md:grid-cols-4 mb-8">
             <!-- Uptime -->
-            <div
-                class="bg-neutral-800 rounded-2xl shadow-lg p-5 flex items-center space-x-4 hover:scale-105 transition-transform">
-                <svg class="w-8 h-8 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z" />
-                </svg>
-                <div>
-                    <p class="text-gray-400">Uptime</p>
-                    <p id="cardUptime" class="text-xl font-semibold text-white">Loading...</p>
+            <div class="card card-hover bg-dark-surface border-dark-border">
+                <div class="flex items-center space-x-4">
+                    <div class="p-3 bg-blue-500/10 rounded-xl">
+                        <svg class="w-8 h-8 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-dark-text-secondary text-sm font-medium">Uptime</p>
+                        <p id="cardUptime" class="text-xl font-semibold text-dark-text">Loading...</p>
+                    </div>
                 </div>
             </div>
+            
             <!-- Usuario -->
-            <div
-                class="bg-neutral-800 rounded-2xl shadow-lg p-5 flex items-center space-x-4 hover:scale-105 transition-transform">
-                <svg class="w-8 h-8 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M14 7a4 4 0 11-8 0 4 4 0 018 0zM2 18a6 6 0 0112 0H2z" />
-                </svg>
-                <div>
-                    <p class="text-gray-400">Usuario Actual</p>
-                    <p id="cardUser" class="text-xl font-semibold text-white">Loading...</p>
+            <div class="card card-hover bg-dark-surface border-dark-border">
+                <div class="flex items-center space-x-4">
+                    <div class="p-3 bg-green-500/10 rounded-xl">
+                        <svg class="w-8 h-8 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M14 7a4 4 0 11-8 0 4 4 0 018 0zM2 18a6 6 0 0112 0H2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-dark-text-secondary text-sm font-medium">Usuario Actual</p>
+                        <p id="cardUser" class="text-xl font-semibold text-dark-text">Loading...</p>
+                    </div>
                 </div>
             </div>
+            
             <!-- Procesos -->
-            <div
-                class="bg-neutral-800 rounded-2xl shadow-lg p-5 flex items-center space-x-4 hover:scale-105 transition-transform">
-                <svg class="w-8 h-8 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                        d="M2 11a1 1 0 011-1h3V7H3a1 1 0 110-2h3V3a1 1 0 112 0v2h3a1 1 0 110 2H9v3h3a1 1 0 110 2H9v3a1 1 0 11-2 0v-3H4a1 1 0 01-1-1z" />
-                </svg>
-                <div>
-                    <p class="text-gray-400">Procesos</p>
-                    <p id="cardProc" class="text-xl font-semibold text-white">Loading...</p>
+            <div class="card card-hover bg-dark-surface border-dark-border">
+                <div class="flex items-center space-x-4">
+                    <div class="p-3 bg-yellow-500/10 rounded-xl">
+                        <svg class="w-8 h-8 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 11a1 1 0 011-1h3V7H3a1 1 0 110-2h3V3a1 1 0 112 0v2h3a1 1 0 110 2H9v3h3a1 1 0 110 2H9v3a1 1 0 11-2 0v-3H4a1 1 0 01-1-1z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-dark-text-secondary text-sm font-medium">Procesos</p>
+                        <p id="cardProc" class="text-xl font-semibold text-dark-text">Loading...</p>
+                    </div>
                 </div>
             </div>
+            
             <!-- Servicios -->
-            <div
-                class="bg-neutral-800 rounded-2xl shadow-lg p-5 flex items-center space-x-4 hover:scale-105 transition-transform">
-                <svg class="w-8 h-8 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M4 3h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2z" />
-                </svg>
-                <div>
-                    <p class="text-gray-400">Servicios Activos</p>
-                    <p id="cardServices" class="text-xl font-semibold text-white">Loading...</p>
+            <div class="card card-hover bg-dark-surface border-dark-border">
+                <div class="flex items-center space-x-4">
+                    <div class="p-3 bg-red-500/10 rounded-xl">
+                        <svg class="w-8 h-8 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M4 3h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-dark-text-secondary text-sm font-medium">Servicios Activos</p>
+                        <p id="cardServices" class="text-xl font-semibold text-dark-text">Loading...</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -60,39 +73,65 @@
         <!-- Charts Section -->
         <div class="grid gap-6 md:grid-cols-3 mb-8">
             <!-- CPU Load Chart -->
-            <div class="bg-neutral-800 rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-shadow">
-                <h3 class="text-lg font-semibold text-white mb-4">Carga de CPU</h3>
+            <div class="card card-hover bg-dark-surface border-dark-border">
+                <h3 class="text-lg font-semibold text-dark-text mb-4">Carga de CPU</h3>
                 <canvas id="cpuChart"></canvas>
             </div>
+            
             <!-- Memory Chart -->
-            <div class="bg-neutral-800 rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-shadow">
-                <h3 class="text-lg font-semibold text-white mb-4">Memoria RAM</h3>
+            <div class="card card-hover bg-dark-surface border-dark-border">
+                <h3 class="text-lg font-semibold text-dark-text mb-4">Memoria RAM</h3>
                 <canvas id="memChart"></canvas>
             </div>
+            
             <!-- Disk Chart -->
-            <div class="bg-neutral-800 rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-shadow">
-                <h3 class="text-lg font-semibold text-white mb-4">Disco</h3>
+            <div class="card card-hover bg-dark-surface border-dark-border">
+                <h3 class="text-lg font-semibold text-dark-text mb-4">Disco</h3>
                 <canvas id="diskChart"></canvas>
             </div>
         </div>
 
         <!-- Detailed Info & Alert -->
         <div class="grid gap-6 md:grid-cols-2 mb-8">
-            <div class="bg-neutral-800 rounded-2xl shadow-lg p-6">
-                <h3 class="text-lg font-semibold text-white mb-4">Información del Sistema</h3>
-                <ul class="text-white space-y-2">
-                    <li><strong>Hostname:</strong> <span id="sysHost"></span></li>
-                    <li><strong>SO:</strong> <span id="sysOS"></span></li>
-                    <li><strong>Kernel:</strong> <span id="sysKernel"></span></li>
-                    <li><strong>Arquitectura:</strong> <span id="sysArch"></span></li>
-                    <li><strong>IP Pública:</strong> <span id="sysIP"></span></li>
+            <div class="card bg-dark-surface border-dark-border">
+                <h3 class="text-lg font-semibold text-dark-text mb-4">Información del Sistema</h3>
+                <ul class="text-dark-text space-y-2">
+                    <li class="flex justify-between">
+                        <span class="text-dark-text-secondary">Hostname:</span>
+                        <span id="sysHost" class="font-medium"></span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span class="text-dark-text-secondary">SO:</span>
+                        <span id="sysOS" class="font-medium"></span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span class="text-dark-text-secondary">Kernel:</span>
+                        <span id="sysKernel" class="font-medium"></span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span class="text-dark-text-secondary">Arquitectura:</span>
+                        <span id="sysArch" class="font-medium"></span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span class="text-dark-text-secondary">IP Pública:</span>
+                        <span id="sysIP" class="font-medium"></span>
+                    </li>
                 </ul>
             </div>
-            <div class="bg-neutral-800 rounded-2xl shadow-lg p-6 flex flex-col justify-between">
+            
+            <div class="card bg-dark-surface border-dark-border flex flex-col justify-between">
                 <div>
-                    <h3 class="text-lg font-semibold text-white mb-4">Uptime & Boot</h3>
-                    <p class="text-white"><strong>Uptime:</strong> <span id="uptimeFull"></span></p>
-                    <p class="text-white mt-2"><strong>Boot:</strong> <span id="bootTime"></span></p>
+                    <h3 class="text-lg font-semibold text-dark-text mb-4">Uptime & Boot</h3>
+                    <div class="space-y-2">
+                        <p class="text-dark-text">
+                            <span class="text-dark-text-secondary">Uptime:</span>
+                            <span id="uptimeFull" class="font-medium ml-2"></span>
+                        </p>
+                        <p class="text-dark-text">
+                            <span class="text-dark-text-secondary">Boot:</span>
+                            <span id="bootTime" class="font-medium ml-2"></span>
+                        </p>
+                    </div>
                 </div>
                 <div id="alertBox" class="mt-6 p-4 rounded-lg hidden">
                     <p id="alertText" class="text-sm font-medium"></p>
@@ -100,49 +139,42 @@
             </div>
         </div>
 
-        <!-- Processes & Network -->
+        <!-- Network & Processes -->
         <div class="grid gap-6 md:grid-cols-2 mb-8">
-            <!-- Processes Table -->
-            <div class="bg-neutral-800 rounded-2xl shadow-lg p-6 overflow-auto">
-                <h3 class="text-lg font-semibold text-white mb-4">Top Procesos</h3>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <p class="text-gray-400">CPU</p>
-                        <table class="min-w-full text-sm text-left text-white">
-                            <thead>
-                                <tr>
-                                    <th class="py-1">PID</th>
-                                    <th>%CPU</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableCpuRows"></tbody>
-                        </table>
+            <!-- Network Traffic -->
+            <div class="card bg-dark-surface border-dark-border">
+                <h3 class="text-lg font-semibold text-dark-text mb-4">Tráfico de Red</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-dark-text-secondary">Descarga:</span>
+                        <span id="networkDown" class="text-dark-text font-medium">Loading...</span>
                     </div>
-                    <div>
-                        <p class="text-gray-400">Memoria</p>
-                        <table class="min-w-full text-sm text-left text-white">
-                            <thead>
-                                <tr>
-                                    <th class="py-1">PID</th>
-                                    <th>%MEM</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableMemRows"></tbody>
-                        </table>
+                    <div class="flex justify-between items-center">
+                        <span class="text-dark-text-secondary">Subida:</span>
+                        <span id="networkUp" class="text-dark-text font-medium">Loading...</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-dark-text-secondary">Conexiones:</span>
+                        <span id="networkConnections" class="text-dark-text font-medium">Loading...</span>
                     </div>
                 </div>
             </div>
-            <!-- Network Chart -->
-            <div class="bg-neutral-800 rounded-2xl shadow-lg p-6">
-                <h3 class="text-lg font-semibold text-white mb-4">Tráfico de Red</h3>
-                <canvas id="netChart"></canvas>
+
+            <!-- Top Processes -->
+            <div class="card bg-dark-surface border-dark-border">
+                <h3 class="text-lg font-semibold text-dark-text mb-4">Procesos Principales</h3>
+                <div id="topProcesses" class="space-y-2">
+                    <div class="text-dark-text-secondary text-center py-4">Loading...</div>
+                </div>
             </div>
         </div>
 
         <!-- SSH Sessions -->
-        <div class="bg-neutral-800 rounded-2xl shadow-lg p-6 mb-8">
-            <h3 class="text-lg font-semibold text-white mb-4">Sesiones SSH</h3>
-            <pre id="sshSessions" class="text-sm text-white bg-neutral-700 p-4 rounded-lg max-h-40 overflow-auto"></pre>
+        <div class="card bg-dark-surface border-dark-border">
+            <h3 class="text-lg font-semibold text-dark-text mb-4">Sesiones SSH Activas</h3>
+            <div id="sshSessions" class="space-y-2">
+                <div class="text-dark-text-secondary text-center py-4">Loading...</div>
+            </div>
         </div>
     </div>
 
