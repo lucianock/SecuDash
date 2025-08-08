@@ -57,7 +57,8 @@
                     :name="auth()->user()->name"
                     :initials="auth()->user()->initials()"
                     icon-trailing="chevrons-up-down"
-                    class="dark:text-dark-text"
+                    class="dark:text-dark-text bg-dark-surface-2 border-dark-border hover:bg-dark-surface-3 transition-all duration-200"
+                    style="background-color: var(--color-dark-surface-2) !important; border: 2px solid var(--color-dark-border) !important;"
                 />
 
                 <flux:menu class="w-[220px] dark:bg-dark-surface dark:border-dark-border">
@@ -103,5 +104,7 @@
                 {{ $slot }}
             </div>
         </flux:main>
+        
+        @fluxScripts
     </body>
 </html>

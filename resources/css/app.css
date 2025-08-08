@@ -448,3 +448,48 @@ select:focus[data-flux-control] {
 .dark ::-webkit-scrollbar-thumb:hover {
     background: var(--color-dark-border);
 }
+
+/* Profile dropdown improvements */
+.dark [data-flux-dropdown] {
+    z-index: 50;
+}
+
+.dark [data-flux-menu] {
+    background-color: var(--color-dark-surface) !important;
+    border: 2px solid var(--color-dark-border) !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.dark [data-flux-menu-item] {
+    color: var(--color-dark-text) !important;
+    padding: 0.75rem 1rem !important;
+    border-radius: 0.5rem !important;
+    margin: 0.25rem !important;
+    transition: all 0.2s ease !important;
+}
+
+.dark [data-flux-menu-item]:hover {
+    background-color: var(--color-dark-surface-2) !important;
+}
+
+.dark [data-flux-profile] {
+    background-color: var(--color-dark-surface-2) !important;
+    border: 2px solid var(--color-dark-border) !important;
+    border-radius: 0.75rem !important;
+    padding: 0.75rem 1rem !important;
+    color: var(--color-dark-text) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.dark [data-flux-profile]:hover {
+    border-color: var(--color-dark-border-2) !important;
+    background-color: var(--color-dark-surface-3) !important;
+}
+
+/* Menu separator improvements */
+.dark [data-flux-menu-separator] {
+    border-color: var(--color-dark-border) !important;
+    margin: 0.5rem 0 !important;
+}
