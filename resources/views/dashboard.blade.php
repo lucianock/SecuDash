@@ -183,7 +183,7 @@
             async function cargarMetricas() {
                 const alertBox = document.getElementById('alertBox');
                 if (!alertBox) return; // Not the dashboard page, skip
-                const { data: d } = await axios.get('https://lucianock.com/metrics_hidden_lck.php');
+                const { data: d } = await axios.get('/api/server-metrics');
 
                 // Cards
                 const cardUptime = document.getElementById('cardUptime');

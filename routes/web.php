@@ -53,4 +53,10 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/linkedin-search', [LinkedinScraperController::class, 'index'])->name('linkedin.index');
 Route::post('/linkedin-search', [LinkedinScraperController::class, 'search'])->name('linkedin.search');
 
+# Server Stats API
+Route::get('/api/server-metrics', [ServerStatsController::class, 'getMetrics'])->name('api.server-metrics');
+
+# Server Stats
+Route::get('/server-stats', [ServerStatsController::class, 'index'])->name('server-stats.index');
+
 require __DIR__ . '/auth.php';
