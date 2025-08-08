@@ -29,24 +29,35 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [VulnerabilityController::class, 'index'])->name('vulnerability.index');
         Route::post('/scan', [VulnerabilityController::class, 'scan'])->name('vulnerability.scan');
         Route::get('/status/{scanId}', [VulnerabilityController::class, 'status'])->name('vulnerability.status');
+        Route::get('/export/{scanId}', [VulnerabilityController::class, 'exportReport'])->name('vulnerability.export');
     });
 });
 
 # Password Generator
 Route::get('/password-generator', [PasswordGeneratorController::class, 'index'])->name('password-generator');
 Route::post('/generate-password', [PasswordGeneratorController::class, 'generate'])->name('generate-password');
+Route::post('/generate-bulk-passwords', [PasswordGeneratorController::class, 'generateBulk'])->name('generate-bulk-passwords');
+Route::post('/validate-password', [PasswordGeneratorController::class, 'validatePassword'])->name('validate-password');
 
-# Vulneravility Search
+# Vulnerability Search
 Route::get('/vulnerability-search', [VulnerabilityControllerApi::class, 'index'])->name('vulnerability-search');
 Route::get('/api/vulnerabilities', [VulnerabilityControllerApi::class, 'search'])->name('api.vulnerabilities.search');
+Route::get('/api/vulnerabilities/{cveId}', [VulnerabilityControllerApi::class, 'getVulnerability'])->name('api.vulnerabilities.show');
+Route::get('/api/vulnerabilities/trends', [VulnerabilityControllerApi::class, 'getTrends'])->name('api.vulnerabilities.trends');
+Route::get('/api/vulnerabilities/statistics', [VulnerabilityControllerApi::class, 'getStatistics'])->name('api.vulnerabilities.statistics');
 
 # Vault
 Route::middleware(['auth'])->group(function () {
     Route::get('/vault', [VaultController::class, 'index'])->name('vault.index');
     Route::get('/vault/create', [VaultController::class, 'create'])->name('vault.create');
     Route::post('/vault', [VaultController::class, 'store'])->name('vault.store');
-    /* Route::delete('/vault/{vault}', [VaultController::class, 'destroy'])->name('vault.destroy');
-    Route::get('vault/{vault}/edit', [VaultController::class, 'edit'])->name('vault.edit'); */
+    Route::get('/vault/{vault}', [VaultController::class, 'show'])->name('vault.show');
+    Route::put('/vault/{vault}', [VaultController::class, 'update'])->name('vault.update');
+    Route::delete('/vault/{vault}', [VaultController::class, 'destroy'])->name('vault.destroy');
+    Route::post('/vault/search', [VaultController::class, 'search'])->name('vault.search');
+    Route::post('/vault/export', [VaultController::class, 'export'])->name('vault.export');
+    Route::post('/vault/import', [VaultController::class, 'import'])->name('vault.import');
+    Route::get('/vault/security-audit', [VaultController::class, 'securityAudit'])->name('vault.security-audit');
 });
 
 # Linkedin Scraper
